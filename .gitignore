@@ -6,6 +6,13 @@ __pycache__/
 # C extensions
 *.so
 
+# Custom Added by Aarya Shree
+activate/
+include/
+Lib/
+Scripts/
+pyvenv.cfg
+
 # Distribution / packaging
 .Python
 build/
