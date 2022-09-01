@@ -3,9 +3,26 @@ from sys import exit
 from time import sleep
 
 # number of disks in the hanoi tower
-n_disks = 5
-# red, blue, green, purple, yellow
+n_disks = 4
+
+# list to store all the moves from the tower of hanoi algorithm
+moves = []
+
+# RGB codes for red, blue, green, purple, yellow
 colors = [(255, 0, 0), (0, 0, 255), (0, 255, 0), (255, 0, 255), (255, 255, 0)]
+
+# recursive algorithm to find the order of moves in tower of hanoi with n disks
+def towerOfHanoi(num_disks, S, T, D):
+    if num_disks == -1:
+        return
+    towerOfHanoi(num_disks - 1, S, D, T)
+    moves.append([num_disks, S, D])
+    towerOfHanoi(num_disks - 1, T, S, D)
+
+# function call to tower of hanoi algorithm
+towerOfHanoi(n_disks - 1, 'S', 'T', 'D')
+
+# main function
 def main():
 
     # initialize pygame
@@ -20,13 +37,16 @@ def main():
     # adding a clock
     clock = pygame.time.Clock()
 
-    # creating a surface to draw on
+    # creating the main surface for drawing
     main_surface = pygame.Surface((800, 600))
     main_surface.fill('White')
 
+    # creating object of Hanoi() class
     runner = Hanoi()
     runner.drawTowers(main_surface)
     runner.createDisks()
+    n = 0
+
     # main event loop
     while True:
         for event in pygame.event.get():
@@ -34,23 +54,35 @@ def main():
                 pygame.quit()
                 exit()
 
+        # attaching the main surface to screen
         screen.blit(main_surface, (0, 0))
 
+        # drawing all the disks initially and redrawing when their position changes
         for i in range(n_disks):
             screen.blit(runner.disks[i], runner.disks_pos[i])
 
+
+        if (n < 2 ** n_disks - 1):
+            # moving the disk to their next position according to the tower of hanoi algorithm
+            runner.moveDisk(moves[n][0], moves[n][1], moves[n][2])
+
         # update our view
         pygame.display.update()
+        n += 1
 
-        # locking framerate to 30fps
-        clock.tick(3)
+        # # delaying close of application when all the moves have been made
+        # if n == (2 ** n_disks - 1):
+        #     sleep(3)
+
+        # locking framerate to 2fps
+        clock.tick(2)
 
 
 class Hanoi():
     # list to hold all the disks
     disks = []
 
-    # position of each disk
+    # latest position of each disk
     disks_pos = []
 
     # length of smallest disk
@@ -84,8 +116,9 @@ class Hanoi():
             self.disks.append(disk)
             self.disks_pos.append([200 - i * 10, self.disk_y + i * 10])
 
-    # takes the display, the source tower and the destination tower as the parameter
+    # takes the disk number, the source tower and the destination tower as the parameter and change position of disk
     def moveDisk(self, disk_num, source, dest):
+        # stores the calculated position of the destination
         pos = [0, 0]
 
         if dest == 'S':
@@ -121,10 +154,8 @@ class Hanoi():
             elif source == 'T':
                 self.T_disks -= 1
 
+        # setting the position of the disk to the new position
         self.disks_pos[disk_num] = pos
 
-
-def algorithm(num_disks, S, T, D):
-    moves = []
-
-main()
+if __name__ == '__main__':
+    main()
