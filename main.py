@@ -1,8 +1,11 @@
 import pygame
 from sys import exit
 from time import sleep
-n_disks = 5
 
+# number of disks in the hanoi tower
+n_disks = 5
+# red, blue, green, purple, yellow
+colors = [(255, 0, 0), (0, 0, 255), (0, 255, 0), (255, 0, 255), (255, 255, 0)]
 def main():
 
     # initialize pygame
@@ -21,27 +24,21 @@ def main():
     main_surface = pygame.Surface((800, 600))
     main_surface.fill('White')
 
-    # creating another transparent surface for the disks
-    disk_surface = pygame.Surface((800, 600), pygame.SRCALPHA, 32)
-    disk_surface = disk_surface.convert_alpha()
-    # initializing main class
+
     runner = Hanoi()
-
-
-    # runner.drawDisk(disk_surface, 5, 'D')
+    runner.drawTowers(main_surface)
+    runner.createDisks()
+    disk_surface = pygame.Surface((90, 10))
     # main event loop
-    n = 1
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-        runner.drawTowers(main_surface)
-        runner.drawDisk(main_surface, 3, 'S')
-        sleep(2)
-        main_surface.fill('White')
+
         screen.blit(main_surface, (0, 0))
-        screen.blit(disk_surface, (0, 0))
+        runner.drawDisks(screen)
+
         # update our view
         pygame.display.update()
 
@@ -50,47 +47,37 @@ def main():
 
 
 class Hanoi():
-    S = (200, 250, 10, 250)
-    T = (400, 250, 10, 250)
-    D = (600, 250, 10, 250)
-    base = (100, 500, 600, 10)
+    # list to hold all the disks
+    disks = []
+
+    # length of smallest disk
+    disk_length = 10
+
+    # position of starting tower
+    disk_x = 200
+
+    # to calculate the starting y position of disks on towers
+    disk_y = 450 + (5 - n_disks) * 10
+
+    # take a pygame.Surface object to draw on as the parameter
     def drawTowers(self, surface):
-        pygame.draw.rect(surface, (0, 0, 0), self.base)
-        pygame.draw.rect(surface, (0, 0, 0), self.S)
-        pygame.draw.rect(surface, (0, 0, 0), self.T)
-        pygame.draw.rect(surface, (0, 0, 0), self.D)
+        # drawing the base and the three towers for the game
+        pygame.draw.rect(surface, (0, 0, 0), (100, 500, 600, 10))
+        pygame.draw.rect(surface, (0, 0, 0), (200, 250, 10, 250))
+        pygame.draw.rect(surface, (0, 0, 0), (400, 250, 10, 250))
+        pygame.draw.rect(surface, (0, 0, 0), (600, 250, 10, 250))
 
-    def drawDisk(self, surface, disk_num, position):
-        disk_length = 90
-        disk_thicc = 10
-        disk_x = 160
-        disk_y = 490
+    # create the disk pygame.Surface objects
+    def createDisks(self):
+        # creating disk surfaces and adding them to a list
+        for i in range(n_disks):
+            disk = pygame.Surface((self.disk_length + i * 20, 10))
+            disk.fill(colors[i])
+            self.disks.append(disk)
 
-        # select the tower where the peg is to be drawn
-        if position == 'S':
-            disk_x = 160
-        elif position == 'T':
-            disk_x = 360
-        elif position == 'D':
-            disk_x = 560
-
-        disk_x += (disk_num - 1) * 10
-        disk_y -= (disk_num - 1) * 10
-        disk_length -= (disk_num - 1) * 20
-
-        # creating the tuple with position data of the disk
-        disk_pos = (disk_x, disk_y, disk_length, disk_thicc)
-
-        if disk_num == 1:
-            pygame.draw.rect(surface, 'Green', disk_pos, 0, 1)
-        elif disk_num == 2:
-            pygame.draw.rect(surface, 'Yellow', disk_pos, 0, 1)
-        elif disk_num == 3:
-            pygame.draw.rect(surface, 'Purple', disk_pos, 0, 1)
-        elif disk_num == 4:
-            pygame.draw.rect(surface, 'Red', disk_pos, 0, 1)
-        elif disk_num == 5:
-            pygame.draw.rect(surface, 'Blue', disk_pos, 0, 1)
-
-
+    # take a pygame.Display as a parameter to draw the disk surfaces on
+    def drawDisks(self, display):
+        # displaying each surface in the disks list
+        for i in range(n_disks):
+            display.blit(self.disks[i], (self.disk_x - i * 10, self.disk_y + i * 10))
 main()
