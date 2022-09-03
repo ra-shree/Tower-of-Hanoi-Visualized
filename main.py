@@ -3,7 +3,7 @@ from sys import exit
 from time import sleep
 
 # number of disks in the hanoi tower
-n_disks = 20
+n_disks = 7
 
 # list to store all the moves from the tower of hanoi algorithm
 moves = []
