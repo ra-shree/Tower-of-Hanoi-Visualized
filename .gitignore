@@ -12,6 +12,11 @@ include/
 Lib/
 Scripts/
 pyvenv.cfg
+modules.xml
+misc.xml
+profile_settings.xml
+vcs.xml
+.idea/
 
 # Distribution / packaging
 .Python
