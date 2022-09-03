@@ -3,7 +3,7 @@ from sys import exit
 from time import sleep
 
 # number of disks in the hanoi tower
-n_disks = 4
+n_disks = 20
 
 # list to store all the moves from the tower of hanoi algorithm
 moves = []
@@ -12,12 +12,15 @@ moves = []
 colors = [(255, 0, 0), (0, 0, 255), (0, 255, 0), (255, 0, 255), (255, 255, 0)]
 
 # recursive algorithm to find the order of moves in tower of hanoi with n disks
+
+
 def towerOfHanoi(num_disks, S, T, D):
     if num_disks == -1:
         return
     towerOfHanoi(num_disks - 1, S, D, T)
     moves.append([num_disks, S, D])
     towerOfHanoi(num_disks - 1, T, S, D)
+
 
 # function call to tower of hanoi algorithm
 towerOfHanoi(n_disks - 1, 'S', 'T', 'D')
@@ -45,8 +48,8 @@ def main():
     runner = Hanoi()
     runner.drawTowers(main_surface)
     runner.createDisks()
-    n = 0
 
+    n = 0
     # main event loop
     while True:
         for event in pygame.event.get():
@@ -61,7 +64,6 @@ def main():
         for i in range(n_disks):
             screen.blit(runner.disks[i], runner.disks_pos[i])
 
-
         if (n < 2 ** n_disks - 1):
             # moving the disk to their next position according to the tower of hanoi algorithm
             runner.moveDisk(moves[n][0], moves[n][1], moves[n][2])
@@ -69,10 +71,6 @@ def main():
         # update our view
         pygame.display.update()
         n += 1
-
-        # # delaying close of application when all the moves have been made
-        # if n == (2 ** n_disks - 1):
-        #     sleep(3)
 
         # locking framerate to 2fps
         clock.tick(2)
@@ -112,7 +110,7 @@ class Hanoi():
         # creating disk surfaces and adding them to a list
         for i in range(n_disks):
             disk = pygame.Surface((self.disk_length + i * 20, 10))
-            disk.fill(colors[i])
+            disk.fill(colors[i % 5])
             self.disks.append(disk)
             self.disks_pos.append([200 - i * 10, self.disk_y + i * 10])
 
@@ -156,6 +154,7 @@ class Hanoi():
 
         # setting the position of the disk to the new position
         self.disks_pos[disk_num] = pos
+
 
 if __name__ == '__main__':
     main()
