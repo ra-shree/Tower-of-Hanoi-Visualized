@@ -76,7 +76,7 @@ def main():
         clock.tick(2)
 
 
-class Hanoi():
+class Hanoi(object):
     # list to hold all the disks
     disks = []
 
